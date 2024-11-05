@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 function Sidebar({ setComponent }) {
   const { profile, setIsAuthenticated } = useAuth();
-  console.log(profile?.user);
+  console.log(profile);
   const navigateTo = useNavigate();
 
   const [show, setShow] = useState(false);
@@ -24,7 +24,7 @@ function Sidebar({ setComponent }) {
     e.preventDefault();
     try {
       const { data } = await axios.get(
-        "http://localhost:4001/api/users/logout",
+        "https://blogappbackend-culv.onrender.com/api/users/logout",
         { withCredentials: true }
       );
       toast.success(data.message);

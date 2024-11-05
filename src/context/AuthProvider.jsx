@@ -4,18 +4,17 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [blogs, setBlogs] = useState();
-  const [profile, setProfile] = useState();
+  const [blogs, setBlogs] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        let token = localStorage.getItem("jwt");
-        console.log(token);
+        const token = localStorage.getItem("jwt");
         if (token) {
           const { data } = await axios.get(
-            "http://localhost:4001/api/users/my-profile",
+            "https://blogappbackend-culv.onrender.com/api/users/my-profile",
             {
               withCredentials: true,
               headers: {
@@ -23,31 +22,46 @@ export const AuthProvider = ({ children }) => {
               },
             }
           );
+          console.log("Profile data fetched:", data);
           setProfile(data);
           setIsAuthenticated(true);
+        } else {
+          console.log("No token found in localStorage.");
         }
       } catch (error) {
-        console.log(error);
+        console.log("Error fetching profile:", error);
       }
     };
-    console.log(profile);
 
     const fetchBlogs = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4001/api/blogs/all-blogs",
+          "https://blogappbackend-culv.onrender.com/api/blogs/all-blogs",
           { withCredentials: true }
         );
-        console.log(data);
+        console.log("Blogs data fetched:", data);
         setBlogs(data);
       } catch (error) {
-        console.log(error);
+        console.log("Error fetching blogs:", error);
       }
     };
 
-    fetchBlogs();
     fetchProfile();
+    fetchBlogs();
   }, []);
+
+  // Log profile and blogs state after each update
+  useEffect(() => {
+    if (profile) {
+      console.log("Updated profile:", profile);
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (blogs.length > 0) {
+      console.log("Updated blogs:", blogs);
+    }
+  }, [blogs]);
 
   return (
     <AuthContext.Provider

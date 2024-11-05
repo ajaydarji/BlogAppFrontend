@@ -4,8 +4,7 @@ import { useAuth } from "../context/AuthProvider";
 function MyProfile() {
   const { profile } = useAuth();
   console.log(profile);
-  
- 
+
   return (
     <div>
       <div className="flex justify-center items-center min-h-screen bg-gray-100">
